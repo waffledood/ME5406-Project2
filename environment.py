@@ -6,8 +6,8 @@ import pygame
 
 from race_track import create_map
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 1000
 WHITE = (255, 255, 255)
 
 # Uncomment this to run headless
@@ -23,7 +23,7 @@ class Environment:
         self.display = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.map_size = 4000
-        self.map_padding = 800 * 3
+        self.map_padding = 1000 * 3
         self.lane_thickness = 250
         self.car = pygame.image.load("racecar.png")
         self.fps = 60
@@ -51,9 +51,11 @@ class Environment:
         self.gas_a = 20
         self.brake_a = 50
         self.friction_a = 5
-        self.max_v = 20
+        self.max_v = 10
         self.min_v = 0
         self.min_d_to_goal = 50
+        self.d_center = 0
+        self.d_angle = 0
 
         # For computing reward
         self.prev_d = 0
@@ -118,7 +120,7 @@ class Environment:
         color_image = self.capture_frame()
         color_image = self.rotate_image(color_image, self.radian_to_degree(-angle))
         color_image = color_image[
-            self.car_x - 100 : self.car_x + 100, self.car_y - 100 : self.car_y + 300, :
+            self.car_x : self.car_x + 400, self.car_y - 300 : self.car_y + 300, :
         ]
         color_image = cv2.rotate(color_image, cv2.ROTATE_180)
         return color_image
@@ -262,6 +264,9 @@ class Environment:
         d = np.dot(v, uv) / np.dot(uv, uv)
         pt3 = pt1 + uv * d
 
+        # computes distance from center lane
+        self.d_center = np.linalg.norm(pt2 - pt3)
+
         # tracks the last covered distance
         dx = d - self.prev_d
         self.prev_d = d
@@ -298,12 +303,15 @@ class Environment:
 
         obs = self.observation_space(self.angle)
         done = self.is_done()
-        reward = -1000 if done else self.compute_reward()
+        reward = self.compute_reward()
+        reward = -1000 if done else reward
         info = {
             "x": self.x,
             "y": self.y,
             "angle": self.angle,
             "velocity": self.v,
+            "d_center": self.d_center,
+            "d_angle": 0,  # TODO: nwjbrandon
         }
         return obs, reward, done, info
 
