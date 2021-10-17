@@ -14,7 +14,7 @@ class MyRaceTrack(Environment):
 
             obs, reward, done, info = self.step(action)
 
-            print("d_center", info["d_center"])
+            print(reward, info)
 
             if done:
                 self.reset()

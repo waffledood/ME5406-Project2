@@ -267,6 +267,11 @@ class Environment:
         # computes distance from center lane
         self.d_center = np.linalg.norm(pt2 - pt3)
 
+        # computes angle from lane direction
+        d_angle = self.angle - self.angles[self.ckpt_idx]
+        d_angle = (d_angle + np.pi) % (2 * np.pi) - np.pi
+        self.d_angle = d_angle / np.pi * 180
+
         # tracks the last covered distance
         dx = d - self.prev_d
         self.prev_d = d
@@ -311,7 +316,7 @@ class Environment:
             "angle": self.angle,
             "velocity": self.v,
             "d_center": self.d_center,
-            "d_angle": 0,  # TODO: nwjbrandon
+            "d_angle": self.d_angle,
         }
         return obs, reward, done, info
 
@@ -325,7 +330,7 @@ class Environment:
 
             obs, reward, done, info = self.step(action)
 
-            print("Reward:", reward)
+            print(reward, info)
 
             if done:
                 self.reset()
