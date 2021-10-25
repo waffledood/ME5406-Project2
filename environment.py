@@ -1,5 +1,3 @@
-import os
-
 import cv2
 import numpy as np
 import pygame
@@ -9,9 +7,6 @@ from race_track import create_map
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 WHITE = (255, 255, 255)
-
-# Uncomment this to run headless
-# os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 pygame.init()
 pygame.display.set_caption("ME5406 Race Track")
@@ -28,7 +23,7 @@ class Environment:
         self.car = pygame.image.load("racecar.png")
         self.fps = 60
         self.dt = 1 / self.fps
-        self.debug = True
+        self.debug = False
 
         # For setting car in the middle of screen
         self.car_x = SCREEN_WIDTH // 2  # DO NOT CHANGE
@@ -120,7 +115,7 @@ class Environment:
         color_image = self.capture_frame()
         color_image = self.rotate_image(color_image, self.radian_to_degree(-angle))
         color_image = color_image[
-            self.car_x : self.car_x + 400, self.car_y - 300 : self.car_y + 300, :
+            self.car_x : self.car_x + 400, self.car_y - 200 : self.car_y + 200, :
         ]
         color_image = cv2.rotate(color_image, cv2.ROTATE_180)
         return color_image
@@ -229,10 +224,11 @@ class Environment:
 
     def is_done(self):
         """
-        Returns True if agent falls went out of track
+        Returns True if agent falls went out of track or if the agent is moving in the opposite direction
         """
         pixel = self.race_track[int(self.y), int(self.x)]
-        if np.sum(pixel) == 0:
+        if np.sum(pixel) == 0 or self.d_angle >= 120 or self.d_angle <= -120:
+            # if np.sum(pixel) == 0:
             return True
         else:
             return False
@@ -248,6 +244,19 @@ class Environment:
         self.prev_d = 0
         self.ckpt_idx = 0
         self.ckpt = self.checkpoints[self.ckpt_idx]
+        self.render(self.x, self.y, self.angle)
+        pygame.display.update()
+        self.clock.tick(self.fps)
+        obs = self.observation_space(self.angle)
+        info = {
+            "x": self.x,
+            "y": self.y,
+            "angle": self.angle,
+            "velocity": self.v,
+            "d_center": self.d_center,
+            "d_angle": self.d_angle,
+        }
+        return obs, info
 
     def compute_reward(self):
         """
@@ -344,7 +353,7 @@ class Environment:
         Closes the game
         """
         pygame.quit()
-        quit()
+        # quit()
 
 
 if __name__ == "__main__":
