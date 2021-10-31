@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import torch
 
-from dqn.dqn_agent import DQAgent
-from dqn.dqn_environment import MyRaceTrack
+from ddqn.ddqn_agent import DuelingDQNAgent
+from ddqn.ddqn_environment import MyRaceTrack
 
 is_eval = int(os.environ.get("is_eval"))
 
@@ -65,12 +65,12 @@ def train():
                 ep_len
             )
             print("Episode:", i, "Reward:", rew, "Losses:", losses / ep_len, "Duration:", ep_len)
-            torch.save(agent.q_net.state_dict(), f"models/dqn_{ckpt_idx}.pt")
+            torch.save(agent.q_net.state_dict(), f"models/ddqn_{ckpt_idx}.pt")
             ckpt_idx += 1
     except KeyboardInterrupt:
         print("Interrupt training")
 
-    with open("models/dqn_training_status.json", "w") as f:
+    with open("models/ddqn_training_status.json", "w") as f:
         training_status = {
             "episode_length": episode_len_list,
             "reward": reward_list,
@@ -82,8 +82,8 @@ def train():
 def test():
     epsilon = 0
     # load model
-    agent.target_net.load_state_dict(torch.load("models/best_dqn.pt"))
-    agent.q_net.load_state_dict(torch.load("models/best_dqn.pt"))
+    # agent.target_net.load_state_dict(torch.load("models/best_ddqn.pt"))
+    agent.q_net.load_state_dict(torch.load("models/best_ddqn.pt"))
 
     # testing
     for i in range(5):
@@ -129,10 +129,10 @@ if __name__ == "__main__":
     sync_freq = 10
     exp_replay_size = 1000
     batch_size = 32
+    epsilon = 1
     count = 0
-
     env = MyRaceTrack()
-    agent = DQAgent(
+    agent = DuelingDQNAgent(
         env,
         num_of_episodes,
         sync_freq,
