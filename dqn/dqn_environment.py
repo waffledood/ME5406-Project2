@@ -1,11 +1,8 @@
-import sys
-
 import cv2
 import numpy as np
 import pygame
 
-sys.path.append("../")
-from environment import Environment
+from common.environment import Environment
 
 
 class MyRaceTrack(Environment):
@@ -19,8 +16,7 @@ class MyRaceTrack(Environment):
         Returns True if agent falls went out of track or if the agent is moving in the opposite direction
         """
         pixel = self.race_track[int(self.y), int(self.x)]
-        if np.sum(pixel) == 0 or np.abs(self.d_angle) >= 120 or np.abs(self.d_center) > 125:
-            # if np.sum(pixel) == 0:
+        if np.sum(pixel) == 0 or np.abs(self.d_angle) >= 160 or np.abs(self.d_center) > 125:
             return True
         else:
             return False
@@ -71,26 +67,28 @@ class MyRaceTrack(Environment):
             # Move the actual checkpoint back to prevent negative rewards
             self.ckpt = next_ckpt
 
-        if np.abs(self.d_center) < 10:
-            reward = reward
-        elif np.abs(self.d_center) < 20:
-            reward = 0.9 * reward
-        elif np.abs(self.d_center) < 30:
-            reward = 0.8 * reward
-        elif np.abs(self.d_center) < 40:
-            reward = 0.7 * reward
-        elif np.abs(self.d_center) < 50:
-            reward = 0.6 * reward
-        elif np.abs(self.d_center) < 60:
-            reward = 0.5 * reward
-        elif np.abs(self.d_center) < 70:
-            reward = 0.4 * reward
-        elif np.abs(self.d_center) < 80:
-            reward = 0.3 * reward
-        elif np.abs(self.d_center) < 90:
-            reward = 0.2 * reward
-        elif np.abs(self.d_center) < 100:
-            reward = 0.1 * reward
-        else:
-            reward = -0.01
+        if reward > 0:
+            if np.abs(self.d_center) < 10:
+                reward = reward
+            elif np.abs(self.d_center) < 20:
+                reward = 0.9 * reward
+            elif np.abs(self.d_center) < 30:
+                reward = 0.8 * reward
+            elif np.abs(self.d_center) < 40:
+                reward = 0.7 * reward
+            elif np.abs(self.d_center) < 50:
+                reward = 0.6 * reward
+            elif np.abs(self.d_center) < 60:
+                reward = 0.5 * reward
+            elif np.abs(self.d_center) < 70:
+                reward = 0.4 * reward
+            elif np.abs(self.d_center) < 80:
+                reward = 0.3 * reward
+            elif np.abs(self.d_center) < 90:
+                reward = 0.2 * reward
+            elif np.abs(self.d_center) < 100:
+                reward = 0.1 * reward
+            else:
+                reward = 0.05 * reward
+
         return reward

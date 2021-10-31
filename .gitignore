@@ -1,7 +1,6 @@
 *.json
 *.pyc
 *.log
-*.pt
 
 runs/
 .ipynb_checkpoints/

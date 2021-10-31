@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import pygame
 
-from race_track import create_map
+from common.race_track import create_map
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
@@ -79,6 +79,7 @@ class Environment:
         self.vectors = vectors
         self.checkpoints = checkpoints
         self.angles = angles
+        self.ckpt_idx = 0
         self.ckpt = checkpoints[self.ckpt_idx]
 
     def radian_to_degree(self, radian):
@@ -237,6 +238,7 @@ class Environment:
         """
         Resets the agent
         """
+        self.generate_race_track()
         self.x = self.start_x
         self.y = self.start_y
         self.angle = self.start_angle
@@ -318,7 +320,7 @@ class Environment:
         obs = self.observation_space(self.angle)
         done = self.is_done()
         reward = self.compute_reward()
-        reward = -1000 if done else reward
+        reward = -100 if done else reward
         info = {
             "x": self.x,
             "y": self.y,

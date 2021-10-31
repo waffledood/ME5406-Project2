@@ -5,7 +5,8 @@ from collections import deque
 import numpy as np
 import torch
 import torch.nn as nn
-from DQNet import DQNet
+
+from dqn.dqn_net import DQNet
 
 
 class DQAgent:
