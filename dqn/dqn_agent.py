@@ -42,6 +42,7 @@ class DQAgent:
             Qp = self.q_net(image, data)
         A = torch.argmax(Qp)
         A = A if torch.rand(1,).item() > epsilon else torch.randint(0, num_actions, (1,))
+        print(A)
         return A
 
     def get_q_next(self, image, data):
