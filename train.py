@@ -15,15 +15,20 @@ def preprocessing(obs, info):
     # add new axis to [1,40,40]
     obs = obs[np.newaxis, :]
     # extract values 
+    # info = np.array([info["d_center"]/250, info["d_angle"]/180])
+    # print(info)
     info = np.array(list(info.values()))
-    info = info[3:] # 1x3
+    # info = info[3:] # 1x3
+    # print(info)
+    info = info/360
+    obs = obs/255
     return obs, info
 
 num_actions = 1
 image_size = [1,1,40,40]
 data_size = [1,3]
 num_of_episodes = 10000
-batch_size = 32
+batch_size = 200
 beta = 0.001
 gamma = 0.95
 clip_grad = 0.1
@@ -42,12 +47,13 @@ for i in range(5000):
     info = info[np.newaxis, :]
     done = False
     p_loss, v_loss, e_loss, ep_len, rew = 0, 0, 0, 0, 0
-    while(done != True and ep_len < 1000):
+    while(done != True and ep_len < 2000):
         ep_len += 1 
         # get best action
         with torch.no_grad():
             a = agent.get_action(obs, info)
         obs, reward, done, info = env.step([1, 0, a.squeeze(0)])
+        reward = reward / 1000
         obs, info = preprocessing(obs, info)
         sn = (obs, info)
         obs = obs[np.newaxis, :]

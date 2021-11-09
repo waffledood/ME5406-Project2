@@ -254,9 +254,9 @@ class Environment:
         self.clock.tick(self.fps)
         obs = self.observation_space(self.angle)
         info = {
-            "x": self.x,
-            "y": self.y,
-            "angle": self.angle,
+            # "x": self.x,
+            # "y": self.y,
+            # "angle": self.angle,
             "velocity": self.v,
             "d_center": self.d_center,
             "d_angle": self.d_angle,
@@ -348,11 +348,11 @@ class Environment:
         obs = self.observation_space(self.angle)
         done = self.is_done()
         reward = self.compute_reward()
-        reward = -100 if done else reward
+        reward = -1000 if done else reward
         info = {
-            "x": self.x,
-            "y": self.y,
-            "angle": self.angle,
+            # "x": self.x,
+            # "y": self.y,
+            # "angle": self.angle,
             "velocity": self.v,
             "d_center": self.d_center,
             "d_angle": self.d_angle,
@@ -369,7 +369,7 @@ class Environment:
 
             obs, reward, done, info = self.step(action)
 
-            print(reward, info)
+            # print(reward, info)
 
             if done:
                 self.reset()

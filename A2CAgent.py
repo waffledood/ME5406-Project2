@@ -32,7 +32,7 @@ class A2CAgent:
 		mu = mu.data.to(self.device).cpu().detach().numpy()
 		sigma = torch.sqrt(var).data.to(self.device).cpu().detach().numpy()
 		actions = np.random.normal(mu, sigma)
-		print(actions)
+		# print(actions)
 		actions = np.clip(actions, -0.1, 0.1)
 		# print(mu, sigma)
 		return actions.squeeze(0)
@@ -75,7 +75,7 @@ class A2CAgent:
 		log_prob = adv * self.calc_logprob(s_mu, s_var, a)
 		loss_policy = -log_prob.mean()
 		entropy_loss = self.beta * (-(torch.log(2*np.pi*s_var) + 1)/2).mean()
-		#print(loss_value, loss_policy, entropy_loss)
+		print(loss_value, loss_policy, entropy_loss)
 		
 		loss = loss_policy + entropy_loss + loss_value
 		self.optimizer.zero_grad()
