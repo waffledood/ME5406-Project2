@@ -32,9 +32,9 @@ class A2CAgent:
 		mu = mu.data.to(self.device).cpu().detach().numpy()
 		sigma = torch.sqrt(var).data.to(self.device).cpu().detach().numpy()
 		actions = np.random.normal(mu, sigma)
+		print(actions)
 		actions = np.clip(actions, -0.1, 0.1)
 		# print(mu, sigma)
-		# print(actions)
 		return actions.squeeze(0)
 		
 	def calc_logprob(self, mu, var, actions):
