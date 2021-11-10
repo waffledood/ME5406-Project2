@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import torch
 
+from common.environment import Environment
 from ddqn.ddqn_agent import DuelingDQNAgent
-from ddqn.ddqn_environment import MyRaceTrack
 
 is_eval = int(os.environ.get("is_eval"))
 
@@ -20,7 +20,6 @@ def preprocessing(obs, info):
     obs = obs[np.newaxis, :]
     # extract values
     info = np.array(list(info.values()))
-    info = info[3:]  # 1x3
     return obs, info
 
 
@@ -64,7 +63,7 @@ def train():
             losses_list.append(losses / ep_len), reward_list.append(rew), episode_len_list.append(
                 ep_len
             )
-            print("Episode:", i, "Reward:", rew, "Losses:", losses / ep_len, "Duration:", ep_len)
+            print("[episode]:", i, "[reward]:", rew, "[duration]:", ep_len)
             torch.save(agent.q_net.state_dict(), f"models/ddqn_{ckpt_idx}.pt")
             ckpt_idx += 1
     except KeyboardInterrupt:
@@ -131,7 +130,7 @@ if __name__ == "__main__":
     batch_size = 32
     epsilon = 1
     count = 0
-    env = MyRaceTrack()
+    env = Environment()
     agent = DuelingDQNAgent(
         env,
         num_of_episodes,

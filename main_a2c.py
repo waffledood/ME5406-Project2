@@ -62,7 +62,7 @@ for i in range(5000):
         sn = (obs, info)
         obs = obs[np.newaxis, :]
         info = info[np.newaxis, :]
-        agent.collect_experience([s, a, reward / 1000, sn])
+        agent.collect_experience([s, a, reward / 100, sn])
         s = sn
         count = count + 1
         rew += reward

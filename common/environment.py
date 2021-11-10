@@ -344,7 +344,7 @@ class Environment:
         obs = self.observation_space(self.angle)
         done = self.is_done()
         reward = self.compute_reward()
-        reward = -1000 if done else reward
+        reward = -100 if done else reward
         info = {
             # "x": self.x,
             # "y": self.y,

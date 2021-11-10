@@ -86,4 +86,5 @@ class DuelingDQNAgent:
         self.optimizer.step()  # Backpropagate error
 
         # self.network_sync_counter += 1
+        print("[loss]:", round(loss.item(), 5))
         return loss.item()
