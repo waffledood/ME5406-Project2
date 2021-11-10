@@ -15,13 +15,10 @@ def preprocessing(obs, info):
     # add new axis to [1,40,40]
     obs = obs[np.newaxis, :]
     # extract values 
-    # info = np.array([info["d_center"]/250, info["d_angle"]/180])
-    # print(info)
     info = np.array(list(info.values()))
-    # info = info[3:] # 1x3
-    # print(info)
-    info = info/360
-    obs = obs/255
+
+    info = info/360 # Doesn't converge without this
+    obs = obs/255 # Doesn't converge without this
     return obs, info
 
 num_actions = 1
@@ -53,7 +50,7 @@ for i in range(5000):
         with torch.no_grad():
             a = agent.get_action(obs, info)
         obs, reward, done, info = env.step([1, 0, a.squeeze(0)])
-        reward = reward / 1000
+        reward = reward / 1000 # Doesn't converge without this
         obs, info = preprocessing(obs, info)
         sn = (obs, info)
         obs = obs[np.newaxis, :]

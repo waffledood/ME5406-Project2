@@ -59,6 +59,6 @@ class A2CNet(nn.Module):
 		d = self.fc1(torch.FloatTensor(data))
 		s = torch.cat((i, d), 1)
 		f_out = self.fc2(s)
-		return self.mu(f_out), self.var(f_out)+0.001, self.value(f_out)
+		return self.mu(f_out), self.var(f_out), self.value(f_out)
 
 		

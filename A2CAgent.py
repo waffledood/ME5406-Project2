@@ -32,15 +32,12 @@ class A2CAgent:
 		mu = mu.data.to(self.device).cpu().detach().numpy()
 		sigma = torch.sqrt(var).data.to(self.device).cpu().detach().numpy()
 		actions = np.random.normal(mu, sigma)
-		# print(actions)
 		actions = np.clip(actions, -0.1, 0.1)
-		# print(mu, sigma)
 		return actions.squeeze(0)
 		
 	def calc_logprob(self, mu, var, actions):
 		p1 = - ((mu - actions) ** 2) / (2*var.clamp(min=1e-3))
 		p2 = - torch.log(torch.sqrt(2 * np.pi * var))
-		#print (p1+p2)
 		return p1 + p2
 	
 	def collect_experience(self, experience):
@@ -68,14 +65,12 @@ class A2CAgent:
 		if done == True:
 			sn_val[-1] = 0
 		target = returns + self.gamma * sn_val
-		#print(target)
 		adv = target - s_val.detach()
 		
 		loss_value = self.loss_fn(target, s_val)
 		log_prob = adv * self.calc_logprob(s_mu, s_var, a)
 		loss_policy = -log_prob.mean()
 		entropy_loss = self.beta * (-(torch.log(2*np.pi*s_var) + 1)/2).mean()
-		print(loss_value, loss_policy, entropy_loss)
 		
 		loss = loss_policy + entropy_loss + loss_value
 		self.optimizer.zero_grad()
