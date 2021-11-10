@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial import ConvexHull
 
 
-def create_map(size, padding, thickness=100, randomed_pts=30, color=(0, 255, 0), seed=0):
+def create_map(size, padding, thickness=100, randomed_pts=30, color=(0, 255, 0), seed=None):
     """
     Creates random map for race track
     """

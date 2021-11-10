@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import pygame
 
-from race_track import create_map
+from common.race_track import create_map
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
