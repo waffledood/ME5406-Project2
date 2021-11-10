@@ -1,5 +1,3 @@
-import os
-
 import cv2
 import numpy as np
 import pygame
@@ -9,9 +7,6 @@ from common.race_track import create_map
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 WHITE = (255, 255, 255)
-
-# Uncomment this to run headless
-# os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 pygame.init()
 pygame.display.set_caption("ME5406 Race Track")
@@ -234,7 +229,7 @@ class Environment:
         """
         pixel = self.race_track[int(self.y), int(self.x)]
         if np.sum(pixel) == 0 or self.d_angle >= 120 or self.d_angle <= -120:
-        #if np.sum(pixel) == 0:
+            # if np.sum(pixel) == 0:
             return True
         else:
             return False
@@ -293,7 +288,7 @@ class Environment:
         self.prev_d = d
 
         reward = -0.1 + dx
-		
+
         if reward > 0:
             if np.abs(self.d_center) < 10:
                 reward = reward
@@ -317,7 +312,6 @@ class Environment:
                 reward = 0.1 * reward
             else:
                 reward = 0.05 * reward
-
 
         if self.debug:
             self.race_track = cv2.circle(
@@ -385,7 +379,7 @@ class Environment:
         Closes the game
         """
         pygame.quit()
-        #quit()
+        # quit()
 
 
 if __name__ == "__main__":
