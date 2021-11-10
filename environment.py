@@ -242,6 +242,7 @@ class Environment:
         """
         Resets the agent
         """
+        self.generate_race_track()
         self.x = self.start_x
         self.y = self.start_y
         self.angle = self.start_angle

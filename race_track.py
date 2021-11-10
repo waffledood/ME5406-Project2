@@ -7,7 +7,7 @@ def create_map(size, padding, thickness=100, randomed_pts=30, color=(0, 255, 0))
     """
     Creates random map for race track
     """
-    np.random.seed(0)
+    # np.random.seed(0)
     radius = thickness // 2
     points = np.random.rand(randomed_pts, 2)
     points[:, 0], points[:, 1] = points[:, 0] * size, points[:, 1] * size
