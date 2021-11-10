@@ -77,6 +77,7 @@ class Environment:
         """
         map_info = create_map(self.map_size, self.map_padding, self.lane_thickness)
         race_track, start_point, angle, vectors, checkpoints, angles = map_info
+        self.ckpt_idx = 0
         self.race_track = race_track
         self.x = self.start_x = start_point[0]
         self.y = self.start_y = start_point[1]
