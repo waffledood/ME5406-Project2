@@ -53,11 +53,10 @@ def train():
                 s = sn
                 count = count + 1
                 rew += reward
-                if count > 20:
+                if count > batch_size or done == True:
                     count = 0
-                    for j in range(3):
-                        loss = agent.train()
-                        losses += loss
+                    loss = agent.train(done)
+                    losses += loss
             if epsilon > 0.05:
                 epsilon -= 5 / 1000
             losses_list.append(losses / ep_len), reward_list.append(rew), episode_len_list.append(
@@ -126,8 +125,8 @@ if __name__ == "__main__":
     data_size = [1, 3]
     num_of_episodes = 10000
     sync_freq = 10
-    exp_replay_size = 1000
-    batch_size = 32
+    exp_replay_size = 200
+    batch_size = 200
     count = 0
 
     env = Environment()

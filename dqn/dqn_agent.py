@@ -1,5 +1,4 @@
 import copy
-import random
 from collections import deque
 
 import numpy as np
@@ -30,7 +29,7 @@ class DQAgent:
         self.network_sync_freq = sync_freq
         self.network_sync_counter = 0
         self.gamma = torch.tensor(0.95).float()
-        self.experience_replay = deque(maxlen=exp_replay_size)
+        self.experience_buffer = deque(maxlen=exp_replay_size)
         self.batch_size = batch_size
         print("Created agent with ", num_actions, "action space")
         return
@@ -51,23 +50,20 @@ class DQAgent:
         return q
 
     def collect_experience(self, experience):
-        self.experience_replay.append(experience)
+        self.experience_buffer.append(experience)
         return
 
-    def sample_from_experience(self, sample_size):
-        if len(self.experience_replay) < sample_size:
-            sample_size = len(self.experience_replay)
-        sample = random.sample(self.experience_replay, sample_size)
-        s_i = torch.tensor([exp[0][0] for exp in sample]).float()
-        s_d = torch.tensor([exp[0][1] for exp in sample]).float()
-        a = torch.tensor([exp[1] for exp in sample]).float()
-        rn = torch.tensor([exp[2] for exp in sample]).float()
-        sn_i = torch.tensor([exp[3][0] for exp in sample]).float()
-        sn_d = torch.tensor([exp[3][1] for exp in sample]).float()
+    def experience_rollout(self):
+        s_i = torch.tensor([exp[0][0] for exp in self.experience_buffer]).float()
+        s_d = torch.tensor([exp[0][1] for exp in self.experience_buffer]).float()
+        a = torch.tensor([exp[1] for exp in self.experience_buffer]).float()
+        rn = torch.tensor([exp[2] for exp in self.experience_buffer]).float()
+        sn_i = torch.tensor([exp[3][0] for exp in self.experience_buffer]).float()
+        sn_d = torch.tensor([exp[3][1] for exp in self.experience_buffer]).float()
         return s_i, s_d, a, rn, sn_i, sn_d
 
-    def train(self):
-        s_i, s_d, a, rn, sn_i, sn_d = self.sample_from_experience(sample_size=self.batch_size)
+    def train(self, done):
+        s_i, s_d, a, rn, sn_i, sn_d = self.experience_rollout()
         if self.network_sync_counter == self.network_sync_freq:
             self.target_net.load_state_dict(self.q_net.state_dict())
             self.network_sync_counter = 0
