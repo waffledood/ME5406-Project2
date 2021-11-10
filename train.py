@@ -1,5 +1,5 @@
 import cv2
-from environment import Environment
+from common.environment import Environment
 import matplotlib.pyplot as plt
 import numpy as np
 import torch

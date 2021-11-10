@@ -1,12 +1,17 @@
+import os
+
 import cv2
 import numpy as np
 import pygame
 
-from common.race_track import create_map
+from race_track import create_map
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 WHITE = (255, 255, 255)
+
+# Uncomment this to run headless
+# os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 pygame.init()
 pygame.display.set_caption("ME5406 Race Track")
@@ -72,6 +77,7 @@ class Environment:
         """
         map_info = create_map(self.map_size, self.map_padding, self.lane_thickness)
         race_track, start_point, angle, vectors, checkpoints, angles = map_info
+        self.ckpt_idx = 0
         self.race_track = race_track
         self.x = self.start_x = start_point[0]
         self.y = self.start_y = start_point[1]
@@ -79,7 +85,6 @@ class Environment:
         self.vectors = vectors
         self.checkpoints = checkpoints
         self.angles = angles
-        self.ckpt_idx = 0
         self.ckpt = checkpoints[self.ckpt_idx]
 
     def radian_to_degree(self, radian):
@@ -229,7 +234,7 @@ class Environment:
         """
         pixel = self.race_track[int(self.y), int(self.x)]
         if np.sum(pixel) == 0 or self.d_angle >= 120 or self.d_angle <= -120:
-            # if np.sum(pixel) == 0:
+        #if np.sum(pixel) == 0:
             return True
         else:
             return False
@@ -238,7 +243,7 @@ class Environment:
         """
         Resets the agent
         """
-        # self.generate_race_track()
+        self.generate_race_track()
         self.x = self.start_x
         self.y = self.start_y
         self.angle = self.start_angle
@@ -254,7 +259,7 @@ class Environment:
             # "x": self.x,
             # "y": self.y,
             # "angle": self.angle,
-            # "velocity": self.v,
+            "velocity": self.v,
             "d_center": self.d_center,
             "d_angle": self.d_angle,
         }
@@ -288,6 +293,31 @@ class Environment:
         self.prev_d = d
 
         reward = -0.1 + dx
+		
+        if reward > 0:
+            if np.abs(self.d_center) < 10:
+                reward = reward
+            elif np.abs(self.d_center) < 20:
+                reward = 0.9 * reward
+            elif np.abs(self.d_center) < 30:
+                reward = 0.8 * reward
+            elif np.abs(self.d_center) < 40:
+                reward = 0.7 * reward
+            elif np.abs(self.d_center) < 50:
+                reward = 0.6 * reward
+            elif np.abs(self.d_center) < 60:
+                reward = 0.5 * reward
+            elif np.abs(self.d_center) < 70:
+                reward = 0.4 * reward
+            elif np.abs(self.d_center) < 80:
+                reward = 0.3 * reward
+            elif np.abs(self.d_center) < 90:
+                reward = 0.2 * reward
+            elif np.abs(self.d_center) < 100:
+                reward = 0.1 * reward
+            else:
+                reward = 0.05 * reward
+
 
         if self.debug:
             self.race_track = cv2.circle(
@@ -325,7 +355,7 @@ class Environment:
             # "x": self.x,
             # "y": self.y,
             # "angle": self.angle,
-            # "velocity": self.v,
+            "velocity": self.v,
             "d_center": self.d_center,
             "d_angle": self.d_angle,
         }
@@ -341,7 +371,7 @@ class Environment:
 
             obs, reward, done, info = self.step(action)
 
-            print(reward, info)
+            # print(reward, info)
 
             if done:
                 self.reset()
@@ -355,7 +385,7 @@ class Environment:
         Closes the game
         """
         pygame.quit()
-        # quit()
+        #quit()
 
 
 if __name__ == "__main__":
