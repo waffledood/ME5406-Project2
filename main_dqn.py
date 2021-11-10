@@ -20,6 +20,9 @@ def preprocessing(obs, info):
     obs = obs[np.newaxis, :]
     # extract values
     info = np.array(list(info.values()))
+
+    info = info / 360
+    obs = obs / 255
     return obs, info
 
 
@@ -49,7 +52,7 @@ def train():
                 sn = (obs, info)
                 obs = obs[np.newaxis, :]
                 info = info[np.newaxis, :]
-                agent.collect_experience([s, a, reward, sn])
+                agent.collect_experience([s, a, reward / 100, sn])
                 s = sn
                 count = count + 1
                 rew += reward
@@ -124,7 +127,7 @@ if __name__ == "__main__":
     image_size = [1, 1, 40, 40]
     data_size = [1, 3]
     num_of_episodes = 10000
-    sync_freq = 10
+    sync_freq = 2
     exp_replay_size = 200
     batch_size = 200
     count = 0
