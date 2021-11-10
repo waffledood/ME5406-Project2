@@ -127,7 +127,7 @@ if __name__ == "__main__":
     image_size = [1, 1, 40, 40]
     data_size = [1, 3]
     num_of_episodes = 10000
-    sync_freq = 2
+    sync_freq = 1
     exp_replay_size = 200
     batch_size = 200
     count = 0
