@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.utils as nn_utils
 import numpy as np
-from A2CNet import A2CNet
+from a2c.a2c_net import A2CNet
 from environment import Environment
 from collections import deque
 import copy

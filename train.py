@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from torch import nn
-from A2CNet import A2CNet 
-from A2CAgent import A2CAgent
+from a2c.a2c_net import A2CNet 
+from a2c.a2c_agent import A2CAgent
 
 def preprocessing(obs, info):
     # convert to grayscale
