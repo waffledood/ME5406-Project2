@@ -255,8 +255,8 @@ class Environment:
             # "y": self.y,
             # "angle": self.angle,
             "velocity": self.v,
-            "d_center": np.abs(self.d_center),
-            "d_angle": np.abs(self.d_angle),
+            "d_center": self.d_center,
+            "d_angle": self.d_angle,
         }
         return obs, info
 
@@ -350,8 +350,8 @@ class Environment:
             # "y": self.y,
             # "angle": self.angle,
             "velocity": self.v,
-            "d_center": np.abs(self.d_center),
-            "d_angle": np.abs(self.d_angle),
+            "d_center": self.d_center,
+            "d_angle": self.d_angle,
         }
         return obs, reward, done, info
 

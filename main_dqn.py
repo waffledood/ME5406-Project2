@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import torch
 
+from common.environment import Environment
 from dqn.dqn_agent import DQAgent
-from dqn.dqn_environment import MyRaceTrack
 
 is_eval = int(os.environ.get("is_eval"))
 
@@ -20,7 +20,9 @@ def preprocessing(obs, info):
     obs = obs[np.newaxis, :]
     # extract values
     info = np.array(list(info.values()))
-    info = info[3:]  # 1x3
+
+    info = info / 360
+    obs = obs / 255
     return obs, info
 
 
@@ -50,21 +52,20 @@ def train():
                 sn = (obs, info)
                 obs = obs[np.newaxis, :]
                 info = info[np.newaxis, :]
-                agent.collect_experience([s, a, reward, sn])
+                agent.collect_experience([s, a, reward / 100, sn])
                 s = sn
                 count = count + 1
                 rew += reward
-                if count > 20:
+                if count > batch_size or done == True:
                     count = 0
-                    for j in range(3):
-                        loss = agent.train()
-                        losses += loss
+                    loss = agent.train(done)
+                    losses += loss
             if epsilon > 0.05:
                 epsilon -= 5 / 1000
             losses_list.append(losses / ep_len), reward_list.append(rew), episode_len_list.append(
                 ep_len
             )
-            print("Episode:", i, "Reward:", rew, "Losses:", losses / ep_len, "Duration:", ep_len)
+            print("[episode]:", i, "[reward]:", rew, "[duration]:", ep_len)
             torch.save(agent.q_net.state_dict(), f"models/dqn_{ckpt_idx}.pt")
             ckpt_idx += 1
     except KeyboardInterrupt:
@@ -126,12 +127,12 @@ if __name__ == "__main__":
     image_size = [1, 1, 40, 40]
     data_size = [1, 3]
     num_of_episodes = 10000
-    sync_freq = 10
-    exp_replay_size = 1000
-    batch_size = 32
+    sync_freq = 1
+    exp_replay_size = 200
+    batch_size = 200
     count = 0
 
-    env = MyRaceTrack()
+    env = Environment()
     agent = DQAgent(
         env,
         num_of_episodes,
