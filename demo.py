@@ -1,11 +1,12 @@
 import cv2
-from environment import Environment
+
+from common.environment import Environment
 
 
 class MyRaceTrack(Environment):
     def __init__(self):
         super().__init__()
-        self.debug = False
+        self.debug = True
 
     def run(self):
         while not self.crashed:

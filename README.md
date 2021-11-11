@@ -1,5 +1,11 @@
 # ME5406
 
+Group 60
+- Ng Wei Jie, Brandon (A0184893L)
+- Mohamad Haikal Bin Mohamad Yusuf (A0182446B) 
+- Dennis Goh Wen Qin (A0096927L)
+
+
 ## Setup 
 - Develop and test on Python3.6 in Ubuntu 18
 ```
@@ -17,48 +23,73 @@ source env/bin/activate
 pip3 install -r requirements.txt
 ```
 
-## Run
-- Run `main.py` to start the simulation
+## Train RL Models
+- Train DQN
 ```
-python3 main.py 
+is_eval=0 python3 main_dqn.py
 ```
-- Override the methods `step`, `policy` and `reward` to customize your policy and reward function through inheritance
-- Below is an example to use the race track environment with the step method overrided
+- Train DDQN
 ```
-from environment import Environment
+is_eval=0 python3 main_ddqn.py
+```
+- Train A2C
+```
+is_eval=0 python3 main_a2c.py
+```
 
-class MyRaceTrack(Environment):
-    def __init__(self):
-        super().__init__()
-        self.debug = False
-
-    def run(self):
-        while not self.crashed:
-            action = self.policy()
-            obs, reward, done, info = self.step(action)
-            if done:
-                self.reset()
-        self.close()
-
-
-if __name__ == "__main__":
-    env = MyRaceTrack()
-    env.run()
+## Evaluate RL Models
+- Evaluate DQN (model is stored as `models/best_dqn.pt`)
 ```
-## Debug
-- Run `environment.py` to start the simulation with debugging on
+is_eval=1 python3 main_dqn.py
 ```
-python3 environment.py
+- Evaluate DDQN (model is stored as `models/best_ddqn.pt`)
 ```
-- Run `race_track.py` to debug the race track
+is_eval=1 python3 main_ddqn.py
+```
+- Evaluate A2C (model is stored as `models/best_a2c.pt`)
+```
+is_eval=1 python3 main_a2c.py
+```
 
 ## Simulator
-- Pygame screen with/without debug enabled
+- Control simulator with keyboard
+```
+python3 demo.py
+```
+
+- Observation Space
 <p align="center">
-  <img alt="screen_debug" src="imgs/screen_debug.png" width="25%">
-  <img alt="screen" src="imgs/screen.png" width="25%">
+  <img alt="screen_debug" src="imgs/obs_space_still.png" width="25%">
+  <img alt="screen" src="imgs/obs_space_tilt.png" width="25%">
 </p>
-- Observation space always aligned uplight
+- Game Engine
 <p align="center">
-  <img alt="obs_space" src="imgs/obs_space.png" width="25%">
+  <img alt="obs_space" src="imgs/game_with_debug_off.png" width="25%">
+  <img alt="obs_space" src="imgs/game_with_debug_on.png" width="25%">
+</p>
+
+## Performance
+- DQN
+<p align="center">
+  <img alt="screen_debug" src="imgs/episode_length_dqn.jpg" width="25%">
+  <img alt="screen" src="imgs/reward_dqn.jpg" width="25%">
+  <img alt="screen" src="imgs/losses_dqn.jpg" width="25%">
+</p>
+
+- DDQN
+<p align="center">
+  <img alt="screen_debug" src="imgs/episode_length_ddqn.jpg" width="25%">
+  <img alt="screen" src="imgs/reward_ddqn.jpg" width="25%">
+  <img alt="screen" src="imgs/losses_ddqn.jpg" width="25%">
+</p>
+
+- A2C
+<p align="center">
+  <img alt="screen_debug" src="imgs/episode_length_a2c.jpg" width="25%">
+  <img alt="screen" src="imgs/reward_a2c.jpg" width="25%">
+</p>
+<p align="center">
+  <img alt="screen" src="imgs/entropy_losses_a2c.jpg" width="25%">
+  <img alt="screen" src="imgs/value_losses_a2c.jpg" width="25%">
+  <img alt="screen" src="imgs/policy_losses_a2c.jpg" width="25%">
 </p>
