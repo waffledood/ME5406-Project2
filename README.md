@@ -37,6 +37,12 @@ is_eval=0 python3 main_ddqn.py
 is_eval=0 python3 main_a2c.py
 ```
 
+---
+
+> **_NOTE:_** Rerun the program if the convergence as good as reported in the performance section
+
+---
+
 ## Evaluate RL Models
 - Evaluate DQN (model is stored as `models/best_dqn.pt`)
 ```
