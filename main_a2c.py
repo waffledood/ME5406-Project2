@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from a2c.a2c_agent import A2CAgent
-from common.environment import Environment
+from common.environment2 import Environment
 
 is_eval = int(os.environ.get("is_eval"))
 
@@ -67,8 +67,8 @@ def train():
                     p_loss += pl
                     v_loss += vl
                     e_loss += el
-            policy_losses_list.append(p_loss), value_losses_list.append(v_loss)
-            entropy_losses_list.append(e_loss),
+            policy_losses_list.append(p_loss / ep_len), value_losses_list.append(v_loss / ep_len)
+            entropy_losses_list.append(e_loss / ep_len),
             reward_list.append(rew), episode_len_list.append(ep_len)
             print("[episode]:", i, "[reward]:", round(rew, 5), "[duration]:", ep_len)
             torch.save(agent.net.state_dict(), f"models/a2c_{ckpt_idx}.pt")
