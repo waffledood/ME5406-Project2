@@ -48,9 +48,7 @@ def train():
             p_loss, v_loss, e_loss, ep_len, rew = 0, 0, 0, 0, 0
             while done != True and ep_len < 2000:
                 ep_len += 1
-                # get best action
-                with torch.no_grad():
-                    a = agent.get_action(obs, info)
+                a = agent.get_action(obs, info)
                 obs, reward, done, info = env.step([1, 0, a.squeeze(0)])
                 obs, info = preprocessing(obs, info)
                 sn = (obs, info)
@@ -100,9 +98,7 @@ def test():
         ep_len, rew = 0, 0
         while done != True and ep_len < 2000:
             ep_len += 1
-            # get best action
-            with torch.no_grad():
-                a = agent.get_action(obs, info)
+            a = agent.get_action(obs, info)
             obs, reward, done, info = env.step([1, 0, a.squeeze(0)])
             obs, info = preprocessing(obs, info)
             obs = obs[np.newaxis, :]

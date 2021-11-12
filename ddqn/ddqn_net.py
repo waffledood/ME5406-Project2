@@ -30,9 +30,7 @@ class DuelingDQNet(nn.Module):
             nn.Flatten(),
         )
 
-        self.fc1 = nn.Sequential(
-            nn.Linear(data_shape[1], n_actions), nn.ReLU(), nn.Flatten()  # 1x12
-        )
+        self.fc1 = nn.Sequential(nn.Linear(data_shape[1], 9), nn.ReLU(), nn.Flatten())  # 1x9
         conv_out_size = self._get_conv_out(image_shape)
         fc_out_size = self._get_fc_out(data_shape)
 
@@ -45,12 +43,6 @@ class DuelingDQNet(nn.Module):
         self.advantage_stream = nn.Sequential(
             nn.Linear(conv_out_size + fc_out_size, 128), nn.ReLU(), nn.Linear(128, n_actions)
         )
-
-        # self.fc2 = nn.Sequential(
-        #     nn.Linear(conv_out_size + fc_out_size, 512),
-        #     nn.ReLU(),
-        #     nn.Linear(512, n_actions)
-        # )
 
     def _get_conv_out(self, shape):
         o = self.conv(torch.zeros(*shape))

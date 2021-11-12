@@ -32,30 +32,23 @@ class A2CAgent:
         self.batch_size = batch_size
         self.experience_buffer = deque(maxlen=self.batch_size)
         print("Created agent with ", num_actions, "action space")
-        return
 
     def get_action(self, image, data):
-        # We do not require gradient at this point, because this function will be used either
-        # during experience collection or during inference
         with torch.no_grad():
             mu, var, _ = self.net(image, data)
         mu = mu.data.to(self.device).cpu().detach().numpy()
         sigma = torch.sqrt(var).data.to(self.device).cpu().detach().numpy()
         actions = np.random.normal(mu, sigma)
-        # print(actions)
         actions = np.clip(actions, -0.1, 0.1)
-        # print(mu, sigma)
         return actions.squeeze(0)
 
     def calc_logprob(self, mu, var, actions):
         p1 = -((mu - actions) ** 2) / (2 * var.clamp(min=1e-3))
         p2 = -torch.log(torch.sqrt(2 * np.pi * var))
-        # print (p1+p2)
         return p1 + p2
 
     def collect_experience(self, experience):
         self.experience_buffer.append(experience)
-        return
 
     def experience_rollout(self):
         s_i = torch.tensor([exp[0][0] for exp in self.experience_buffer]).float()
@@ -78,7 +71,6 @@ class A2CAgent:
         if done == True:
             sn_val[-1] = 0
         target = returns + self.gamma * sn_val
-        # print(target)
         adv = target - s_val.detach()
 
         loss_value = self.loss_fn(target, s_val)
@@ -88,9 +80,9 @@ class A2CAgent:
 
         loss = loss_policy + entropy_loss + loss_value
         self.optimizer.zero_grad()
-        loss.backward()  # Compute gradients
+        loss.backward()
         nn_utils.clip_grad_norm_(self.net.parameters(), self.clip_grad)
-        self.optimizer.step()  # Backpropagate error
+        self.optimizer.step()
 
         print(
             "[value loss]:",

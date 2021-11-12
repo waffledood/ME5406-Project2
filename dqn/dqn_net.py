@@ -29,9 +29,7 @@ class DQNet(nn.Module):
             nn.ReLU(),
             nn.Flatten(),
         )
-        self.fc1 = nn.Sequential(
-            nn.Linear(data_shape[1], n_actions), nn.ReLU(), nn.Flatten()  # 1x12
-        )
+        self.fc1 = nn.Sequential(nn.Linear(data_shape[1], 9), nn.ReLU(), nn.Flatten())  # 1x9
         conv_out_size = self._get_conv_out(image_shape)
         fc_out_size = self._get_fc_out(data_shape)
         self.fc2 = nn.Sequential(

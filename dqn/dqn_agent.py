@@ -32,11 +32,8 @@ class DQAgent:
         self.experience_buffer = deque(maxlen=exp_replay_size)
         self.batch_size = batch_size
         print("Created agent with ", num_actions, "action space")
-        return
 
     def get_action(self, image, data, num_actions, epsilon):
-        # We do not require gradient at this point, because this function will be used either
-        # during experience collection or during inference
         with torch.no_grad():
             Qp = self.q_net(image, data)
         A = torch.argmax(Qp)
@@ -62,7 +59,7 @@ class DQAgent:
         sn_d = torch.tensor([exp[3][1] for exp in self.experience_buffer]).float()
         return s_i, s_d, a, rn, sn_i, sn_d
 
-    def train(self, done):
+    def train(self):
         s_i, s_d, a, rn, sn_i, sn_d = self.experience_rollout()
         if self.network_sync_counter == self.network_sync_freq:
             self.target_net.load_state_dict(self.q_net.state_dict())
@@ -73,14 +70,17 @@ class DQAgent:
         current = qp.max(1).values.unsqueeze(1)
 
         # get target return using target network
-        q_next = self.get_q_next(sn_i, sn_d)
+        with torch.no_grad():
+            qn = self.target_net(sn_i, sn_d)
+        q_next = qn.max(1).values.unsqueeze(1)
+
         rn = np.reshape(rn, (len(rn), 1))
         target = rn + self.gamma * q_next
 
         loss = self.loss_fn(current, target)
         self.optimizer.zero_grad()
-        loss.backward()  # Compute gradients
-        self.optimizer.step()  # Backpropagate error
+        loss.backward()
+        self.optimizer.step()
 
         self.network_sync_counter += 1
         print("[loss]:", round(loss.item(), 5))

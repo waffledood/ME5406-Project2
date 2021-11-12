@@ -44,9 +44,7 @@ def train():
             losses, ep_len, rew = 0, 0, 0
             while done != True and ep_len < 2000:
                 ep_len += 1
-                # get best action
-                with torch.no_grad():
-                    a = agent.get_action(obs, info, num_actions, epsilon)
+                a = agent.get_action(obs, info, num_actions, epsilon)
                 obs, reward, done, info = env.step(action_map[a])
                 obs, info = preprocessing(obs, info)
                 sn = (obs, info)
@@ -58,7 +56,7 @@ def train():
                 rew += reward
                 if count > batch_size or done == True:
                     count = 0
-                    loss = agent.train(done)
+                    loss = agent.train()
                     losses += loss
             if epsilon > 0.05:
                 epsilon -= 5 / 1000
@@ -96,9 +94,7 @@ def test():
         ep_len, rew = 0, 0
         while done != True and ep_len < 2000:
             ep_len += 1
-            # get best action
-            with torch.no_grad():
-                a = agent.get_action(obs, info, num_actions, epsilon)
+            a = agent.get_action(obs, info, num_actions, epsilon)
             obs, reward, done, info = env.step(action_map[a])
             obs, info = preprocessing(obs, info)
             obs = obs[np.newaxis, :]
