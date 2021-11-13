@@ -73,12 +73,12 @@ class A2CAgent:
         target = returns + self.gamma * sn_val
         adv = target - s_val.detach()
 
-        loss_value = self.loss_fn(target, s_val)
+        value_loss = self.loss_fn(target, s_val)
         log_prob = adv * self.calc_logprob(s_mu, s_var, a)
-        loss_policy = -log_prob.mean()
+        policy_loss = -log_prob.mean()
         entropy_loss = self.beta * (-(torch.log(2 * np.pi * s_var) + 1) / 2).mean()
 
-        loss = loss_policy + entropy_loss + loss_value
+        loss = policy_loss + entropy_loss + value_loss
         self.optimizer.zero_grad()
         loss.backward()
         nn_utils.clip_grad_norm_(self.net.parameters(), self.clip_grad)
@@ -86,12 +86,12 @@ class A2CAgent:
 
         print(
             "[value loss]:",
-            round(loss_value.item(), 5),
+            round(value_loss.item(), 5),
             "[policy loss]:",
-            round(loss_policy.item(), 5),
+            round(policy_loss.item(), 5),
             "[entropy loss]:",
             round(entropy_loss.item(), 5),
             "[total loss]:",
             round(loss.item(), 5),
         )
-        return loss_policy.item(), loss_value.item(), entropy_loss.item()
+        return policy_loss.item(), value_loss.item(), entropy_loss.item()
