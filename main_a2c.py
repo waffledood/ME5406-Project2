@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from a2c.a2c_agent import A2CAgent
-from common.environment import Environment
+from common.environment2 import Environment
 
 is_eval = int(os.environ.get("is_eval"))
 

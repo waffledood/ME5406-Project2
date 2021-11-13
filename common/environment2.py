@@ -116,7 +116,7 @@ class Environment:
         color_image = self.capture_frame()
         color_image = self.rotate_image(color_image, self.radian_to_degree(-angle))
         color_image = color_image[
-            self.car_x : self.car_x + 300, self.car_y - 200 : self.car_y + 200, :
+            self.car_x : self.car_x + 400, self.car_y - 200 : self.car_y + 200, :
         ]
         color_image = cv2.rotate(color_image, cv2.ROTATE_180)
         return color_image
@@ -228,7 +228,7 @@ class Environment:
         Returns True if agent falls went out of track or if the agent is moving in the opposite direction
         """
         pixel = self.race_track[int(self.y), int(self.x)]
-        if np.sum(pixel) == 0 or np.abs(self.d_angle) > 120 or np.abs(self.d_center) > 300:
+        if np.sum(pixel) == 0 or np.abs(self.d_angle) > 120:
             # if np.sum(pixel) == 0:
             return True
         else:
