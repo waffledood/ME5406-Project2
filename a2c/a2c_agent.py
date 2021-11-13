@@ -43,7 +43,7 @@ class A2CAgent:
         sigma = torch.sqrt(var).data.to(self.device).cpu().detach().numpy()
         actions = np.random.normal(mu, sigma)
         # print(actions)
-        actions = np.clip(actions, -0.1, 0.1)
+        actions = np.clip(actions, -1, 1) * 0.1
         # print(mu, sigma)
         return actions.squeeze(0)
 
