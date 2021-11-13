@@ -39,7 +39,7 @@ is_eval=0 python3 main_a2c.py
 
 ---
 
-> **_NOTE:_** Rerun the program if the convergence as good as reported in the performance section
+> **_NOTE:_** Rerun the program if the convergence is not as good as reported in the performance section
 
 ---
 
@@ -55,6 +55,12 @@ is_eval=1 python3 main_ddqn.py
 - Evaluate A2C (model is stored as `models/best_a2c.pt`)
 ```
 is_eval=1 python3 main_a2c.py
+```
+
+## PID Controller
+- Control with PID
+```
+python3 main_pid.py
 ```
 
 ## Simulator
