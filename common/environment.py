@@ -228,7 +228,7 @@ class Environment:
         Returns True if agent falls went out of track or if the agent is moving in the opposite direction
         """
         pixel = self.race_track[int(self.y), int(self.x)]
-        if np.sum(pixel) == 0 or self.d_angle >= 120 or self.d_angle <= -120:
+        if np.sum(pixel) == 0 or np.abs(self.d_angle) > 120 or np.abs(self.d_center) > 200:
             # if np.sum(pixel) == 0:
             return True
         else:
