@@ -40,7 +40,11 @@ def create_map(size, padding, thickness=100, randomed_pts=30, color=(0, 255, 0),
         angles.append(angle)
         padded_map = cv2.line(padded_map, pt1, pt2, color, thickness)
 
-    return padded_map, checkpoints[0], angles[0], vectors, checkpoints, angles
+    pt1 = checkpoints[0]
+    pt2 = checkpoints[1]
+    start_point = (pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2
+
+    return padded_map, start_point, angles[0], vectors, checkpoints, angles
 
 
 if __name__ == "__main__":
