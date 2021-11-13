@@ -116,7 +116,7 @@ class Environment:
         color_image = self.capture_frame()
         color_image = self.rotate_image(color_image, self.radian_to_degree(-angle))
         color_image = color_image[
-            self.car_x : self.car_x + 400, self.car_y - 200 : self.car_y + 200, :
+            self.car_x : self.car_x + 300, self.car_y - 200 : self.car_y + 200, :
         ]
         color_image = cv2.rotate(color_image, cv2.ROTATE_180)
         return color_image
