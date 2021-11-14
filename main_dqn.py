@@ -140,7 +140,6 @@ if __name__ == "__main__":
         data_size,
     )
     if is_eval:
-        env = Environment(randomized=None)
         test()
     else:
         train()

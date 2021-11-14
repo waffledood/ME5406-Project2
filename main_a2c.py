@@ -121,7 +121,6 @@ if __name__ == "__main__":
         env, num_of_episodes, beta, gamma, clip_grad, batch_size, num_actions, image_size, data_size
     )
     if is_eval:
-        env = Environment2(randomized=None)
         test()
     else:
         train()
