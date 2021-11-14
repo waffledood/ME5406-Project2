@@ -8,10 +8,10 @@ steering_step = 10*deg2rad
 
 # init environment 
 env = Environment()
-num_of_episodes = 10
+num_of_episodes = 1 #10
 
 # init stats 
-reward_list, episode_len_list = [], []
+cumulative_reward_list, episode_len_list, error_list = [], [], []
 
 # PID parameters
 Kp = 0.001
@@ -28,8 +28,11 @@ for i in range(num_of_episodes):
 
     # PID variables 
     P_error_trans, I_error_trans, D_error_trans = 0, 0, 0
-    # previous error & correction agent needs to make 
+    # previous error, correction agent needs to make 
     prev_error_trans, corr_trans = 0, 0
+    
+    # init stats for current error
+    current_error = []
 
     while(done != True and ep_len < 2000):
 
@@ -47,37 +50,65 @@ for i in range(num_of_episodes):
         ''' PID Controller '''
         # P error (current error)
         P_error_trans = error_trans
+
         # I error (cumulative error) 
-        I_error_trans = I_error_trans + error_trans
+        # anti-windup for I error (when the controller has reached the setpoint, reset I error to 0) 
+        if np.abs(error_trans) <= 0.1:
+            I_error_trans = 0
+        # else continue accumulating error 
+        else:
+            I_error_trans = I_error_trans + error_trans
+
         # D error (difference in errors)
         D_error_trans = (error_trans - prev_error_trans)/dt 
 
         # PID control algo
         corr_trans = Kp*P_error_trans + Ki*I_error_trans + Kd*D_error_trans
 
+        ''' Controller determines next action to take '''
+        # determine next action to take 
+        a = [1, 0, corr_trans]
+
+        ''' Variable updating & Error tracking '''
         # updating of variables 
         prev_error_trans = error_trans
         ep_len += 1
         rew  += reward
        
-        # determine next action to take 
-        a = [1, 0, corr_trans]
+        # track current error stats
+        current_error.append(error_trans)
     
     # track stats
-    reward_list.append(rew), episode_len_list.append(ep_len)
+    cumulative_reward_list.append(rew), episode_len_list.append(ep_len), error_list.append(current_error)
 
 # Episode Length 
-plt.plot(episode_len_list)
+episode_len_list = np.array(episode_len_list)
+plt.plot(episode_len_list, 'ro')
 plt.title("Episode Length")
 plt.ylabel("Length of Episode")
 plt.xlabel("Episode No.")
 plt.show()
 
 # Rewards received 
-plt.plot(reward_list)
+cumulative_reward_list = np.array(cumulative_reward_list)
+plt.plot(cumulative_reward_list, 'ro')
 plt.title("Rewards received")
 plt.ylabel("Value of Reward")
 plt.xlabel("Episode No.")
+plt.show()
+
+# Translational Error 
+x = np.arange(0, 2000*0.1, 0.1)
+for y in error_list:
+    y = np.array(y)
+
+    # to account for cases when controller ends episode earlier than 2000 steps
+    if len(y) != 2000:
+        y = np.concatenate((y, np.zeros(2000-len(y), dtype='int')))
+    plt.plot(x, y)
+plt.title("Translational Error")
+plt.ylabel("Translational Error")
+plt.xlabel("Time")
 plt.show()
 
 env.close()
