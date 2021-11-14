@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from a2c.a2c_agent import A2CAgent
-from common.environment2 import Environment
+from common.environment2 import Environment2
 
 is_eval = int(os.environ.get("is_eval"))
 
@@ -116,11 +116,12 @@ if __name__ == "__main__":
     gamma = 0.95
     clip_grad = 0.1
     count = 0
-    env = Environment()
+    env = Environment2(randomized=0)
     agent = A2CAgent(
         env, num_of_episodes, beta, gamma, clip_grad, batch_size, num_actions, image_size, data_size
     )
     if is_eval:
+        env = Environment2(randomized=None)
         test()
     else:
         train()
