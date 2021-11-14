@@ -12,7 +12,7 @@ pygame.init()
 pygame.display.set_caption("ME5406 Race Track")
 
 
-class Environment:
+class Environment3:
     def __init__(self):
         # For game settings
         self.display = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -390,5 +390,5 @@ class Environment:
 
 
 if __name__ == "__main__":
-    env = Environment()
+    env = Environment3()
     env.run()

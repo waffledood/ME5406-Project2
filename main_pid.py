@@ -1,4 +1,4 @@
-from common.environment3 import Environment
+from common.environment3 import Environment3
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -6,8 +6,8 @@ import numpy as np
 deg2rad = np.pi/180
 steering_step = 10*deg2rad
 
-# init environment 
-env = Environment()
+# init environment (with no randomized environment each episode)
+env = Environment3(randomized=0)
 num_of_episodes = 10
 
 # init stats 
