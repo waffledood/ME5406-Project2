@@ -128,7 +128,7 @@ if __name__ == "__main__":
     batch_size = 200
     count = 0
 
-    env = Environment()
+    env = Environment(randomized=0)
     agent = DQAgent(
         env,
         num_of_episodes,
@@ -140,6 +140,7 @@ if __name__ == "__main__":
         data_size,
     )
     if is_eval:
+        env = Environment(randomized=None)
         test()
     else:
         train()

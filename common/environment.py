@@ -13,7 +13,7 @@ pygame.display.set_caption("ME5406 Race Track")
 
 
 class Environment:
-    def __init__(self):
+    def __init__(self, randomized=None):
         # For game settings
         self.display = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
@@ -64,13 +64,14 @@ class Environment:
         self.vectors = []
         self.checkpoints = []
         self.angles = []
+        self.randomized = randomized
         self.generate_race_track()
 
     def generate_race_track(self):
         """
         Returns randomly generated race track
         """
-        map_info = create_map(self.map_size, self.map_padding, self.lane_thickness)
+        map_info = create_map(self.map_size, self.map_padding, self.lane_thickness, seed=self.randomized)
         race_track, start_point, angle, vectors, checkpoints, angles = map_info
         self.ckpt_idx = 0
         self.race_track = race_track
